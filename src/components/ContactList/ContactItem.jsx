@@ -1,6 +1,14 @@
 import { ItemContact, Text, Button } from './ContactItem.styled';
+import { useDispatch } from 'react-redux';
+import { deletedContact } from 'redux/contactSlice';
 
-export const ContactItem = ({ id, number, name, onDeleteContact }) => {
+export const ContactItem = ({ id, number, name }) => {
+  const dispatch = useDispatch();
+
+  const onDeleteContact = contactId => {
+    dispatch(deletedContact(contactId));
+  };
+
   return (
     <>
       <ItemContact>

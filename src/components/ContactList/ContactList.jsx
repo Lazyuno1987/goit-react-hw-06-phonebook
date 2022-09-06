@@ -2,18 +2,25 @@ import { List } from './ContactList.styled';
 import PropTypes from 'prop-types';
 import { ContactItem } from './ContactItem';
 import { nanoid } from 'nanoid';
-export const ContactList = ({ contacts, onDeleteContact }) => {
+import { getContacts, getFilteredContact } from 'redux/contactSlice';
+import { useSelector } from 'react-redux';
+
+export const ContactList = () => {
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilteredContact);
+
+  const onFiltr = () => {
+    const normalizedFilter = filter.toLowerCase();
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter)
+    );
+  };
+
   return (
     <List>
-      {contacts.map(({ name, number, id }) => {
+      {onFiltr().map(({ name, number, id }) => {
         return (
-          <ContactItem
-            key={nanoid()}
-            name={name}
-            number={number}
-            id={id}
-            onDeleteContact={onDeleteContact}
-          />
+          <ContactItem key={nanoid()} name={name} number={number} id={id} />
         );
       })}
     </List>
@@ -21,7 +28,6 @@ export const ContactList = ({ contacts, onDeleteContact }) => {
 };
 
 ContactList.propTypes = {
-  onDeleteContact: PropTypes.func.isRequired,
   contacts: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
